@@ -8,12 +8,12 @@ export interface AudioFrame {
   // waveform: muestras de la señal de audio en el dominio del tiempo.
   // Valores normalizados entre -1 y 1. Longitud determinada por fftSize del AnalyserNode.
   // Representa la onda de presión sonora en el instante actual.
-  waveform: Float32Array;
+  waveform: Float32Array<ArrayBuffer>;
 
   // frequencyData: magnitudes del espectro de frecuencias en decibelios.
   // Resultado de aplicar la FFT a la señal de tiempo: X(f) = FFT{x(t)}
   // Longitud = fftSize / 2. Cada bin representa un rango de frecuencias: Δf = sampleRate / fftSize
-  frequencyData: Float32Array;
+  frequencyData: Uint8Array<ArrayBuffer>;
 
   // Energía RMS del frame actual: E_rms = √(1/N · Σxᵢ²)
   // Representa el nivel de energía promedio de la señal en este instante.
