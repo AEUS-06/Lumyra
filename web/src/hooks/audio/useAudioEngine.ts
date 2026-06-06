@@ -53,13 +53,20 @@ export function useAudioEngine(): AudioEngineHandle {
   const setAudioFrame      = useLumyraStore((s) => s.setAudioFrame);
   const setFieldParams     = useLumyraStore((s) => s.setFieldParams);
   const setBeatDetected    = useLumyraStore((s) => s.setBeatDetected);
-  const getFieldParams     = useLumyraStore((s) => () => s.fieldParams);
+
+  // Leer fieldParams directamente desde getState() en lugar de un selector
+  // que devuelve una función nueva en cada render — eso causa loop infinito en Zustand.
+  // getState() es síncrono y no suscribe al store, por lo que no dispara re-renders.
+  const getCurrentFieldParams = useCallback(
+    () => useLumyraStore.getState().fieldParams,
+    []
+  );
 
   // El loop recibe callbacks para escribir al store
   // sin importar useLumyraStore directamente
   const audioLoop = useAudioLoop({
     readBuffers:          analyzerNode.readBuffers,
-    getCurrentFieldParams: getFieldParams,
+    getCurrentFieldParams,
     onAudioFrame:         setAudioFrame,
     onFieldParams:        setFieldParams,
     onBeatDetected:       setBeatDetected,
