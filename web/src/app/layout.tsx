@@ -29,7 +29,7 @@ const themeScript = `
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="es" data-theme="dark">
+    <html lang="es" data-theme="dark" data-scroll-behavior="smooth">
       <head>
         {/* Inyectado antes del CSS para que el atributo esté listo */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
