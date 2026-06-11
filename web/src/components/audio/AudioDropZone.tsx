@@ -1,20 +1,14 @@
 'use client';
 
-// Componente visual del área de drag & drop para archivos de audio.
-//
-// Responsabilidad única: renderizar el área de drop y sus estados visuales.
-// No gestiona eventos ni valida archivos — recibe handlers ya procesados
-// de useFileDrop.ts como props.
+// Zona de drag & drop para archivos de audio.
+// Responsabilidad única: estados visuales del drop.
 
 import { useRef } from 'react';
 import { FileDropHandle } from './hooks/useFileDrop';
 
 interface AudioDropZoneProps {
-  // Handlers de drag & drop ya procesados por useFileDrop
   dropHandlers: FileDropHandle;
-
-  // Verdadero si ya hay un archivo cargado (cambia el mensaje)
-  hasFile: boolean;
+  hasFile:      boolean;
 }
 
 export function AudioDropZone({ dropHandlers, hasFile }: AudioDropZoneProps) {
@@ -38,13 +32,20 @@ export function AudioDropZone({ dropHandlers, hasFile }: AudioDropZoneProps) {
       onDrop={onDrop}
       onClick={() => inputRef.current?.click()}
       style={{
-        border:        `1px dashed ${isDraggingOver ? '#3a8fff' : '#1a2a3a'}`,
-        borderRadius:  4,
-        padding:       '12px 16px',
+        border:        `1px dashed ${isDraggingOver ? 'var(--color-active)' : 'var(--color-border-mid)'}`,
+        padding:       '20px 16px',
         cursor:        'pointer',
         textAlign:     'center',
-        background:    isDraggingOver ? 'rgba(58,143,255,0.06)' : 'transparent',
-        transition:    'all 0.15s ease',
+        background:    isDraggingOver
+          ? 'rgba(58,143,255,0.06)'
+          : 'transparent',
+        transition:    'border-color 0.15s ease, background 0.15s ease',
+        /* Sin border-radius — coherente con el lenguaje brutalista */
+        borderRadius:  0,
+        display:       'flex',
+        flexDirection: 'column',
+        gap:           8,
+        alignItems:    'center',
       }}
     >
       <input
@@ -55,28 +56,52 @@ export function AudioDropZone({ dropHandlers, hasFile }: AudioDropZoneProps) {
         style={{ display: 'none' }}
       />
 
+      {/* Ícono */}
+      <span style={{
+        fontFamily: "'JetBrains Mono', monospace",
+        fontSize:   18,
+        color:      isDraggingOver ? 'var(--color-active)' : 'var(--color-border-mid)',
+        lineHeight: 1,
+        transition: 'color 0.15s ease',
+      }}>
+        {isDraggingOver ? '↓' : '♫'}
+      </span>
+
       <p style={{
-        fontFamily: 'var(--font-mono, monospace)',
-        fontSize:   10,
-        color:      isDraggingOver ? '#3a8fff' : '#3a4a5a',
-        letterSpacing: '0.08em',
+        fontFamily:    "'JetBrains Mono', monospace",
+        fontSize:      9,
+        color:         isDraggingOver ? 'var(--color-active)' : 'var(--color-text-muted)',
+        letterSpacing: '0.1em',
         textTransform: 'uppercase',
-        margin:     0,
+        margin:        0,
+        lineHeight:    1.6,
+        transition:    'color 0.15s ease',
       }}>
         {isDraggingOver
           ? 'soltar archivo'
           : hasFile
           ? 'cargar otro archivo'
-          : 'drag · wav · mp3 · ogg · flac'}
+          : 'wav · mp3 · ogg · flac'}
       </p>
+
+      {!isDraggingOver && !hasFile && (
+        <p style={{
+          fontFamily:    "'Inter', sans-serif",
+          fontSize:      10,
+          color:         'var(--color-text-dim)',
+          margin:        0,
+          fontWeight:    300,
+        }}>
+          o haz click para explorar
+        </p>
+      )}
 
       {error && (
         <p style={{
-          fontFamily: 'var(--font-mono, monospace)',
+          fontFamily: "'JetBrains Mono', monospace",
           fontSize:   10,
-          color:      '#ff4444',
-          marginTop:  4,
-          margin:     '4px 0 0',
+          color:      'var(--color-danger)',
+          margin:     0,
         }}>
           {error}
         </p>

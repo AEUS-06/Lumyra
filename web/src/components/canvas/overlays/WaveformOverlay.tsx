@@ -1,28 +1,22 @@
 'use client';
 
-// Componente contenedor del overlay de forma de onda de audio.
-//
-// Responsabilidad única: gestionar el elemento canvas 2D,
-// su ciclo de vida y el loop de dibujo por frame.
-// La lógica de dibujo está en useWaveformDraw.ts.
-//
-// Se posiciona con CSS absolute sobre el canvas 3D de R3F.
-// Solo es visible cuando hay audio reproduciéndose.
+// Overlay de forma de onda de audio.
+// Responsabilidad única: canvas 2D con el loop de dibujo.
+// Posicionado sobre el canvas 3D de R3F — no compite con su RAF.
 
 import { useRef, useEffect } from 'react';
 import { useLumyraStore } from '@/store';
 import { useWaveformDraw } from './useWaveformDraw';
 
 export function WaveformOverlay() {
-  const canvasRef  = useRef<HTMLCanvasElement>(null);
-  const audioFrame = useLumyraStore((s) => s.audioFrame);
+  const canvasRef    = useRef<HTMLCanvasElement>(null);
+  const audioFrame   = useLumyraStore((s) => s.audioFrame);
   const audioPlaying = useLumyraStore((s) => s.audioPlaying);
   const { draw, clear } = useWaveformDraw();
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
@@ -42,14 +36,14 @@ export function WaveformOverlay() {
       width={800}
       height={60}
       style={{
-        position:  'absolute',
-        bottom:    48,
-        left:      0,
-        right:     0,
-        width:     '100%',
-        height:    60,
+        position:      'absolute',
+        bottom:        'var(--strip-height)',
+        left:          0,
+        right:         0,
+        width:         '100%',
+        height:        60,
         pointerEvents: 'none',
-        opacity:   0.85,
+        opacity:       0.85,
       }}
     />
   );

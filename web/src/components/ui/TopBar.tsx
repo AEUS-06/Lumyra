@@ -1,17 +1,12 @@
 'use client';
 
 // Barra superior de Lumyra.
-//
-// Responsabilidad única: renderizar la topbar y componer los ModeTabs.
-// Lee el modo activo del store y dispara setMode al cambiar de tab.
-// No contiene lógica de negocio — solo orquesta componentes visuales.
+// 48px, Bebas Neue wordmark, tabs de modo, indicadores del sistema.
 
 import { useLumyraStore } from '@/store';
 import { AppMode } from '@/store/types/app.types';
 import { ModeTab } from './ModeTab';
 
-// Definición de los tabs disponibles.
-// Si en el futuro se agregan modos, solo se agrega una entrada aquí.
 const TABS: { mode: AppMode; label: string }[] = [
   { mode: 'audio', label: '// campo · audio' },
 ];
@@ -22,32 +17,36 @@ export function TopBar() {
 
   return (
     <header style={{
-      position:       'absolute',
-      top:            0,
-      left:           0,
-      right:          0,
-      height:         40,
-      background:     'rgba(4,9,15,0.95)',
-      borderBottom:   '0.5px solid #0d1a26',
-      display:        'flex',
-      alignItems:     'stretch',
-      zIndex:         50,
+      position:     'absolute',
+      top:          0,
+      left:         0,
+      right:        0,
+      height:       'var(--topbar-height)',
+      background:   'var(--color-bg-panel)',
+      backdropFilter: 'var(--backdrop-blur)',
+      WebkitBackdropFilter: 'var(--backdrop-blur)',
+      borderBottom: '1px solid var(--color-border)',
+      display:      'flex',
+      alignItems:   'stretch',
+      zIndex:       50,
     }}>
-      {/* Wordmark */}
+
+      {/* Wordmark — Bebas Neue */}
       <div style={{
-        padding:       '0 18px',
+        padding:       '0 20px',
         display:       'flex',
         alignItems:    'center',
-        borderRight:   '0.5px solid #0d1a26',
+        borderRight:   '1px solid var(--color-border)',
         flexShrink:    0,
       }}>
         <span style={{
-          fontFamily:    'var(--font-mono, monospace)',
-          fontSize:      10,
-          fontWeight:    700,
-          color:         '#fff',
+          fontFamily:    "'Bebas Neue', sans-serif",
+          fontSize:      20,
           letterSpacing: '0.22em',
           textTransform: 'uppercase',
+          color:         'var(--color-text-primary)',
+          lineHeight:    1,
+          userSelect:    'none',
         }}>
           Lumyra
         </span>
@@ -66,42 +65,21 @@ export function TopBar() {
         ))}
       </nav>
 
-      {/* Indicadores del sistema — esquina derecha */}
+      {/* Indicadores del sistema — derecha */}
       <div style={{
         marginLeft:  'auto',
         display:     'flex',
         alignItems:  'stretch',
       }}>
+        <SysIndicator label="60fps" />
+        <SysIndicator label="FFT·2048" />
+
+        {/* ActivityDot */}
         <div style={{
-          padding:       '0 12px',
-          display:       'flex',
-          alignItems:    'center',
-          borderLeft:    '0.5px solid #0d1a26',
-          fontFamily:    'var(--font-mono, monospace)',
-          fontSize:      8,
-          color:         '#1a3a5a',
-          letterSpacing: '0.08em',
-        }}>
-          60fps
-        </div>
-        <div style={{
-          padding:       '0 12px',
-          display:       'flex',
-          alignItems:    'center',
-          borderLeft:    '0.5px solid #0d1a26',
-          fontFamily:    'var(--font-mono, monospace)',
-          fontSize:      8,
-          color:         '#1a3a5a',
-          letterSpacing: '0.08em',
-        }}>
-          FFT·2048
-        </div>
-        {/* Indicador de actividad — verde cuando hay audio o manos activas */}
-        <div style={{
-          padding:    '0 14px',
+          padding:    '0 16px',
           display:    'flex',
           alignItems: 'center',
-          borderLeft: '0.5px solid #0d1a26',
+          borderLeft: '1px solid var(--color-border)',
         }}>
           <ActivityDot />
         </div>
@@ -110,17 +88,40 @@ export function TopBar() {
   );
 }
 
-// Punto de actividad — se ilumina cuando el sistema está procesando datos
-function ActivityDot() {
-  const audioPlaying  = useLumyraStore((s) => s.audioPlaying);
+// ─── Indicador de sistema ─────────────────────────────────────────────────────
 
+function SysIndicator({ label }: { label: string }) {
+  return (
+    <div style={{
+      padding:       '0 14px',
+      display:       'flex',
+      alignItems:    'center',
+      borderLeft:    '1px solid var(--color-border)',
+      fontFamily:    "'JetBrains Mono', monospace",
+      fontSize:      8,
+      letterSpacing: '0.1em',
+      color:         'var(--color-text-muted)',
+      userSelect:    'none',
+    }}>
+      {label}
+    </div>
+  );
+}
+
+// ─── ActivityDot ──────────────────────────────────────────────────────────────
+
+function ActivityDot() {
+  const audioPlaying = useLumyraStore((s) => s.audioPlaying);
 
   return (
     <div style={{
-      width:      5,
-      height:     5,
+      width:        6,
+      height:       6,
       borderRadius: '50%',
-      transition:   'all 0.3s ease',
+      background:   audioPlaying ? 'var(--color-hot)' : 'var(--color-border-mid)',
+      boxShadow:    audioPlaying ? '0 0 8px var(--color-hot)' : 'none',
+      animation:    audioPlaying ? 'activity-pulse 1.2s ease-in-out infinite' : 'none',
+      transition:   'background 0.3s ease, box-shadow 0.3s ease',
     }} />
   );
 }

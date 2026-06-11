@@ -1,24 +1,15 @@
 'use client';
 
 // Componente visual de un tab individual en la barra superior.
-//
-// Responsabilidad única: renderizar un tab con su estado activo/inactivo.
-// No gestiona el estado del modo — recibe el estado y el handler como props.
+// Responsabilidad única: renderizar el estado activo/inactivo del tab.
 
 import { AppMode } from '@/store/types/app.types';
 
 interface ModeTabProps {
-  // Modo que representa este tab
-  mode:        AppMode;
-
-  // Etiqueta visible del tab
-  label:       string;
-
-  // Verdadero si este tab es el modo activo
-  isActive:    boolean;
-
-  // Callback al hacer click
-  onClick:     (mode: AppMode) => void;
+  mode:     AppMode;
+  label:    string;
+  isActive: boolean;
+  onClick:  (mode: AppMode) => void;
 }
 
 export function ModeTab({ mode, label, isActive, onClick }: ModeTabProps) {
@@ -27,18 +18,30 @@ export function ModeTab({ mode, label, isActive, onClick }: ModeTabProps) {
       onClick={() => onClick(mode)}
       style={{
         height:        '100%',
-        padding:       '0 18px',
+        padding:       '0 20px',
         background:    'transparent',
         border:        'none',
-        borderRight:   '0.5px solid #0d1a26',
+        borderRight:   '1px solid var(--color-border)',
         cursor:        'pointer',
-        fontFamily:    'var(--font-mono, monospace)',
+        fontFamily:    "'JetBrains Mono', monospace",
         fontSize:      9,
         letterSpacing: '0.1em',
         textTransform: 'uppercase',
-        color:         isActive ? '#fff' : '#2a4a6a',
-        borderBottom:  isActive ? '1px solid #3a8fff' : '1px solid transparent',
-        transition:    'color 0.15s ease, border-color 0.15s ease',
+        color:         isActive ? 'var(--color-text-primary)' : 'var(--color-text-muted)',
+        /* Línea activa de 2px en la parte inferior */
+        boxShadow:     isActive ? 'inset 0 -2px 0 var(--color-active)' : 'none',
+        transition:    'color 0.15s ease, box-shadow 0.15s ease',
+        whiteSpace:    'nowrap',
+      }}
+      onMouseEnter={(e) => {
+        if (!isActive) {
+          (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-text-secondary)';
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!isActive) {
+          (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-text-muted)';
+        }
       }}
     >
       {label}

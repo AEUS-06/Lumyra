@@ -10,7 +10,7 @@ const FieldCanvas = dynamic(
   {
     ssr:     false,
     loading: () => (
-      <div style={{ width: '100%', height: '100%', background: '#04090f' }} />
+      <div style={{ width: '100%', height: '100%', background: 'var(--color-bg)' }} />
     ),
   }
 );
@@ -22,21 +22,18 @@ export default function LabPage() {
       height:     '100vh',
       position:   'relative',
       overflow:   'hidden',
-      background: '#04090f',
+      background: 'var(--color-bg)',
     }}>
+      {/* Canvas de campo — capa base */}
       <div style={{
         position: 'absolute',
-        top:      0,
-        left:     0,
-        right:    0,
-        bottom:   0,
-        width:    '100%',
-        height:   '100%',
+        inset:    0,
         zIndex:   0,
       }}>
         <FieldCanvas />
       </div>
 
+      {/* UI sobre el campo */}
       <TopBar />
       <AudioPanel />
       <ParameterStrip />

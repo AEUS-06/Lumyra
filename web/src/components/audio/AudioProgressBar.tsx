@@ -1,57 +1,52 @@
 'use client';
 
-// Componente visual de la barra de progreso de reproducción.
-//
-// Responsabilidad única: renderizar el progreso y el tiempo actual.
-// No accede al store — recibe los valores formateados como props.
+// Barra de progreso de reproducción.
+// Responsabilidad única: progreso + tiempo.
 
 interface AudioProgressBarProps {
   currentTime: string;
   duration:    string;
-  // Progreso entre 0 y 1
   progress:    number;
 }
 
-export function AudioProgressBar({
-  currentTime,
-  duration,
-  progress,
-}: AudioProgressBarProps) {
+export function AudioProgressBar({ currentTime, duration, progress }: AudioProgressBarProps) {
   return (
-    <div style={{ marginTop: 8 }}>
-      {/* Barra de progreso */}
+    <div style={{ marginTop: 4 }}>
+      {/* Track */}
       <div style={{
-        height:       1,
-        background:   '#0d1a26',
-        borderRadius: 1,
+        height:       2,
+        background:   'var(--color-border)',
         overflow:     'hidden',
+        position:     'relative',
       }}>
+        {/* Fill */}
         <div style={{
-          height:     '100%',
+          position:   'absolute',
+          inset:      0,
           width:      `${Math.min(progress * 100, 100)}%`,
-          background: '#3a8fff',
+          background: `linear-gradient(90deg, var(--color-active) 0%, var(--color-hot) 100%)`,
           transition: 'width 0.5s linear',
         }} />
       </div>
 
-      {/* Tiempo actual y duración total */}
+      {/* Tiempos */}
       <div style={{
         display:        'flex',
         justifyContent: 'space-between',
-        marginTop:      4,
+        marginTop:      6,
       }}>
         <span style={{
-          fontFamily:    'var(--font-mono, monospace)',
+          fontFamily:    "'JetBrains Mono', monospace",
           fontSize:      9,
-          color:         '#2a4a6a',
+          color:         'var(--color-text-secondary)',
           letterSpacing: '0.06em',
         }}>
           {currentTime}
         </span>
         <span style={{
-          fontFamily:    'var(--font-mono, monospace)',
+          fontFamily:    "'JetBrains Mono', monospace",
           fontSize:      9,
-          color:         '#1a2a3a',
+          color:         'var(--color-text-muted)',
           letterSpacing: '0.06em',
         }}>
           {duration}

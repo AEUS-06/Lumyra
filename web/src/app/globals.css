@@ -1,81 +1,208 @@
-/* Fuente monospace de Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap');
+/* ─── Fuentes ─────────────────────────────────────────────────────────────────
+   Display + mono desde Google Fonts.
+   Bebas Neue para el wordmark / títulos grandes.
+   JetBrains Mono para datos, parámetros y UI monoespaciada.
+   Inter para descripciones y body text.
+──────────────────────────────────────────────────────────────────────────────*/
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400;600;700&display=swap');
 
-/* Variables CSS globales de Lumyra */
-:root {
-  /* Paleta de color */
+/* ─── Tokens de diseño ────────────────────────────────────────────────────────
+   Dos conjuntos: [data-theme="dark"] (default) y [data-theme="light"].
+   El root arranca en oscuro. El toggle del TopBar cambia el atributo en <html>.
+──────────────────────────────────────────────────────────────────────────────*/
+:root,
+[data-theme="dark"] {
+  /* Fondos */
   --color-bg:           #04090f;
-  --color-bg-panel:     rgba(4, 9, 15, 0.92);
-  --color-border:       #0d1a26;
+  --color-bg-surface:   #080f18;
+  --color-bg-panel:     rgba(4, 9, 15, 0.94);
+  --color-bg-overlay:   rgba(4, 9, 15, 0.72);
+
+  /* Bordes */
+  --color-border:       #0d1e2e;
   --color-border-light: #0a1520;
-
-  /* Azul eléctrico — campo activo */
-  --color-electric:     #3a8fff;
-
-  /* Cian cuántico — valores altos, beat */
-  --color-quantum:      #00f0c0;
-
-  /* Violeta — carga negativa */
-  --color-negative:     #a050ff;
+  --color-border-mid:   #1a2a3a;
 
   /* Texto */
   --color-text-primary:   #ffffff;
-  --color-text-secondary: #7fc4ff;
-  --color-text-muted:     #2a4a6a;
-  --color-text-dim:       #1a3a5a;
+  --color-text-secondary: #3a6080;
+  --color-text-muted:     #1e3a52;
+  --color-text-dim:       #0f2030;
 
-  /* Tipografía */
-  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  /* Señal */
+  --color-active:   #3a8fff;
+  --color-hot:      #00f0c0;
+  --color-negative: #a050ff;
+  --color-danger:   #ff4444;
 
-  /* Layout */
-  --topbar-height:    40px;
-  --strip-height:     48px;
-  --panel-width:      220px;
+  /* Glassmorphism */
+  --backdrop-blur: blur(12px);
+
+  /* Sombras */
+  --shadow-panel: 0 0 0 0.5px #0d1e2e, 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-glow-active: 0 0 20px rgba(58, 143, 255, 0.15);
+  --shadow-glow-hot:    0 0 20px rgba(0, 240, 192, 0.15);
 }
 
-/* Reset */
+[data-theme="light"] {
+  /* Fondos */
+  --color-bg:           #f0f4f8;
+  --color-bg-surface:   #ffffff;
+  --color-bg-panel:     rgba(240, 244, 248, 0.94);
+  --color-bg-overlay:   rgba(240, 244, 248, 0.72);
+
+  /* Bordes */
+  --color-border:       #c8d8e8;
+  --color-border-light: #d8e8f0;
+  --color-border-mid:   #b0c8d8;
+
+  /* Texto */
+  --color-text-primary:   #04090f;
+  --color-text-secondary: #4a6a80;
+  --color-text-muted:     #7a9ab0;
+  --color-text-dim:       #a0bcc8;
+
+  /* Señal */
+  --color-active:   #1a60d0;
+  --color-hot:      #007a60;
+  --color-negative: #7030d0;
+  --color-danger:   #cc2222;
+
+  /* Glassmorphism */
+  --backdrop-blur: blur(16px);
+
+  /* Sombras */
+  --shadow-panel: 0 0 0 1px #c8d8e8, 0 4px 24px rgba(0, 0, 0, 0.08);
+  --shadow-glow-active: 0 0 16px rgba(26, 96, 208, 0.12);
+  --shadow-glow-hot:    0 0 16px rgba(0, 122, 96, 0.12);
+}
+
+/* ─── Reset ───────────────────────────────────────────────────────────────────*/
 *, *::before, *::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+  margin:     0;
+  padding:    0;
 }
 
 html, body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+  width:      100%;
+  height:     100%;
+  overflow:   hidden;
   background: var(--color-bg);
-  color: var(--color-text-primary);
-  font-family: var(--font-mono);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  color:      var(--color-text-primary);
+
+  /* Transición de tema — no flashea */
+  transition: background 0.4s ease, color 0.4s ease;
+
+  font-family:               'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing:    antialiased;
+  -moz-osx-font-smoothing:   grayscale;
 }
 
-/* Scrollbar — mínima para los pocos casos donde aparece */
-::-webkit-scrollbar {
-  width: 2px;
-}
-::-webkit-scrollbar-track {
-  background: var(--color-bg);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+/* ─── Tipografía base ─────────────────────────────────────────────────────────*/
+/* Display — Bebas Neue solo para wordmark y h1 grandes */
+.font-display {
+  font-family:    'Bebas Neue', 'Impact', sans-serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
-/* Selección de texto */
+/* Mono — datos, parámetros, UI técnica */
+.font-mono,
+code,
+pre {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+/* Body — descripciones */
+.font-body {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────────────────────────*/
+::-webkit-scrollbar       { width: 2px; height: 2px; }
+::-webkit-scrollbar-track { background: var(--color-bg); }
+::-webkit-scrollbar-thumb { background: var(--color-border); }
+
+/* ─── Selección ───────────────────────────────────────────────────────────────*/
 ::selection {
   background: rgba(58, 143, 255, 0.2);
-  color: var(--color-text-primary);
+  color:      var(--color-text-primary);
 }
 
-/* Botones base — reset para que cada componente defina su propio estilo */
+/* ─── Botones base ────────────────────────────────────────────────────────────*/
 button {
-  font-family: var(--font-mono);
-  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  cursor:      pointer;
+  border:      none;
+  background:  transparent;
 }
 
-/* Links base */
+/* ─── Links ───────────────────────────────────────────────────────────────────*/
 a {
-  color: inherit;
+  color:           inherit;
   text-decoration: none;
+}
+
+/* ─── Animaciones globales ────────────────────────────────────────────────────*/
+
+/* ActivityDot — pulso cuando hay señal activa */
+@keyframes activity-pulse {
+  0%,100% { opacity: 1; }
+  50%     { opacity: 0.15; }
+}
+
+/* VU meter bar — fill animado */
+@keyframes vu-fill {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+
+/* Hover de botón home — entrada rápida */
+@keyframes btn-hover-in {
+  from { transform: scale(1); }
+  to   { transform: scale(1.02); }
+}
+
+/* Drawer slide-in desde la izquierda */
+@keyframes drawer-in {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+
+/* ─── Accesibilidad — reduce motion ──────────────────────────────────────────*/
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration:   0.01ms !important;
+    transition-duration:  0.01ms !important;
+  }
+}
+
+/* ─── Responsive helpers ──────────────────────────────────────────────────────*/
+@media (max-width: 767px) {
+  :root {
+    --topbar-height: 48px;
+    --strip-height:  52px;
+  }
+
+  /* ParameterValue: ocultar los últimos 2 en mobile */
+  [data-hide-mobile="true"] {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --topbar-height: 48px;
+    --strip-height:  48px;
+    --drawer-width:  280px;
+  }
+}
+
+/* ─── Variables de layout ─────────────────────────────────────────────────────*/
+:root {
+  --topbar-height: 48px;
+  --strip-height:  48px;
+  --drawer-width:  280px;
+  --fab-size:      48px;
 }

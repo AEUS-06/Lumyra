@@ -1,9 +1,7 @@
 'use client';
 
-// Componente visual que muestra la información del archivo de audio cargado.
-//
-// Responsabilidad única: renderizar el nombre y duración del archivo.
-// No accede al store ni calcula nada — recibe los datos como props.
+// Información del archivo de audio cargado.
+// Responsabilidad única: nombre + duración.
 
 interface AudioFileInfoProps {
   fileName: string;
@@ -12,35 +10,35 @@ interface AudioFileInfoProps {
 }
 
 export function AudioFileInfo({ fileName, duration, decoding }: AudioFileInfoProps) {
-  // Truncar el nombre si es muy largo para que no rompa el layout del panel
-  const displayName = fileName.length > 24
-    ? `${fileName.slice(0, 21)}...`
+  const displayName = fileName.length > 26
+    ? `${fileName.slice(0, 23)}…`
     : fileName;
 
   return (
     <div style={{
-      padding:    '8px 0',
-      borderBottom: '0.5px solid #0d1a26',
+      paddingBottom: '12px',
+      borderBottom:  '1px solid var(--color-border)',
     }}>
       <p style={{
-        fontFamily:    'var(--font-mono, monospace)',
-        fontSize:      11,
-        color:         decoding ? '#3a5a7a' : '#7fc4ff',
+        fontFamily:    "'Inter', sans-serif",
+        fontSize:      12,
+        fontWeight:    400,
+        color:         decoding ? 'var(--color-text-muted)' : 'var(--color-active)',
         margin:        0,
-        letterSpacing: '0.04em',
         overflow:      'hidden',
         textOverflow:  'ellipsis',
         whiteSpace:    'nowrap',
+        transition:    'color 0.2s ease',
       }}>
-        {decoding ? 'decodificando...' : displayName}
+        {decoding ? 'decodificando…' : displayName}
       </p>
 
       {!decoding && (
         <p style={{
-          fontFamily:    'var(--font-mono, monospace)',
+          fontFamily:    "'JetBrains Mono', monospace",
           fontSize:      10,
-          color:         '#2a3a4a',
-          margin:        '2px 0 0',
+          color:         'var(--color-text-muted)',
+          margin:        '4px 0 0',
           letterSpacing: '0.06em',
         }}>
           {duration}
