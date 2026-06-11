@@ -3,12 +3,12 @@ import './globals.css';
 
 // Metadata de la aplicación para SEO y redes sociales
 export const metadata: Metadata = {
-  title:       'Lumyra — where physics becomes experience',
+  title:       'Lumyra — donde la física se convierte en experiencia',
   description: 'Laboratorio electromagnético interactivo. Arte, ciencia y percepción a través de las ecuaciones de Maxwell.',
   keywords:    ['electromagnetismo', 'física', 'arte generativo', 'sintetizador', 'campo eléctrico'],
   openGraph: {
     title:       'Lumyra',
-    description: 'where physics becomes experience',
+    description: 'donde la física se convierte en experiencia',
     type:        'website',
   },
 };

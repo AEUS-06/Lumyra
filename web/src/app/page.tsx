@@ -15,7 +15,6 @@ export default function HomePage() {
   const router  = useRouter();
   const setMode = useLumyraStore((s) => s.setMode);
 
-  // Al seleccionar un modo, lo guarda en el store y navega al laboratorio
   function enterLab(mode: AppMode) {
     setMode(mode);
     router.push('/lab');
@@ -23,52 +22,54 @@ export default function HomePage() {
 
   return (
     <main style={{
-      width:           '100%',
-      height:          '100vh',
-      background:      '#04090f',
-      display:         'flex',
-      flexDirection:   'column',
-      alignItems:      'center',
-      justifyContent:  'center',
-      gap:             48,
-      fontFamily:      'var(--font-mono, monospace)',
-      position:        'relative',
-      overflow:        'hidden',
+      width:          '100%',
+      height:         '100vh',
+      background:     '#04090f',
+      display:        'flex',
+      flexDirection:  'column',
+      alignItems:     'center',
+      justifyContent: 'center',
+      gap:            56,
+      fontFamily:     'var(--font-mono, monospace)',
+      position:       'relative',
+      overflow:       'hidden',
     }}>
 
-      {/* Wordmark principal */}
-      <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 12 }}>
+      {/* Wordmark */}
+      <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 16 }}>
         <h1 style={{
-          fontSize:      'clamp(48px, 10vw, 96px)',
+          fontSize:      'clamp(52px, 10vw, 104px)',
           fontWeight:    700,
           color:         '#ffffff',
-          letterSpacing: '0.18em',
+          letterSpacing: '0.22em',
           textTransform: 'uppercase',
           lineHeight:    1,
+          margin:        0,
         }}>
           LUMYRA
         </h1>
         <p style={{
-          fontSize:      11,
-          color:         '#1a3a5a',
-          letterSpacing: '0.22em',
+          fontSize:      10,
+          color:         '#1e4060',
+          letterSpacing: '0.28em',
           textTransform: 'uppercase',
+          margin:        0,
         }}>
-          where physics becomes experience
+          donde la física se convierte en experiencia
         </p>
       </div>
 
-      {/* Tags del proyecto */}
+      {/* Etiquetas */}
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
-        {['open source', 'experimental', 'arte y ciencia', 'electromagnetismo'].map((tag) => (
+        {['código abierto', 'experimental', 'arte y ciencia', 'electromagnetismo'].map((tag) => (
           <span
             key={tag}
             style={{
-              padding:       '5px 12px',
-              border:        '0.5px solid #0d1a26',
+              padding:       '4px 10px',
+              border:        '0.5px solid #0d1e2e',
               fontSize:      9,
-              color:         '#1a3a5a',
-              letterSpacing: '0.1em',
+              color:         '#1e4060',
+              letterSpacing: '0.12em',
               textTransform: 'uppercase',
             }}
           >
@@ -85,19 +86,12 @@ export default function HomePage() {
           equation="∇·E = ρ/ε₀"
           onClick={() => enterLab('audio')}
         />
-        <ModeCard
-          title="Campo · Manos"
-          description="Tus manos como fuentes de carga eléctrica. La posición, apertura y gestos controlan el campo en tiempo real."
-          equation="F = q(E + v×B)"
-          onClick={() => enterLab('hands')}
-        />
       </div>
 
     </main>
   );
 }
 
-// Tarjeta de selección de modo
 interface ModeCardProps {
   title:       string;
   description: string;
@@ -110,41 +104,43 @@ function ModeCard({ title, description, equation, onClick }: ModeCardProps) {
     <button
       onClick={onClick}
       style={{
-        width:         280,
-        padding:       24,
+        width:         300,
+        padding:       28,
         background:    'transparent',
-        border:        '0.5px solid #0d1a26',
+        border:        '0.5px solid #0d1e2e',
         cursor:        'pointer',
         textAlign:     'left',
         display:       'flex',
         flexDirection: 'column',
-        gap:           12,
-        transition:    'border-color 0.2s ease, background 0.2s ease',
+        gap:           14,
+        transition:    'border-color 0.25s ease, background 0.25s ease',
       }}
       onMouseEnter={(e) => {
-        (e.currentTarget as HTMLButtonElement).style.borderColor = '#1a3a5a';
-        (e.currentTarget as HTMLButtonElement).style.background  = 'rgba(58,143,255,0.03)';
+        const el = e.currentTarget as HTMLButtonElement;
+        el.style.borderColor = '#1e4060';
+        el.style.background  = 'rgba(58,143,255,0.04)';
       }}
       onMouseLeave={(e) => {
-        (e.currentTarget as HTMLButtonElement).style.borderColor = '#0d1a26';
-        (e.currentTarget as HTMLButtonElement).style.background  = 'transparent';
+        const el = e.currentTarget as HTMLButtonElement;
+        el.style.borderColor = '#0d1e2e';
+        el.style.background  = 'transparent';
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <span style={{
           fontSize:      11,
           fontWeight:    700,
-          color:         '#fff',
-          letterSpacing: '0.1em',
+          color:         '#ffffff',
+          letterSpacing: '0.12em',
           textTransform: 'uppercase',
         }}>
           {title}
         </span>
         <span style={{
-          fontSize:      9,
-          color:         '#1a3a5a',
-          letterSpacing: '0.06em',
-          fontStyle:     'normal',
+          fontSize:      10,
+          color:         '#1e4060',
+          letterSpacing: '0.04em',
+          fontFamily:    'var(--font-mono, monospace)',
         }}>
           {equation}
         </span>
@@ -152,20 +148,21 @@ function ModeCard({ title, description, equation, onClick }: ModeCardProps) {
 
       <p style={{
         fontSize:      10,
-        color:         '#1a3a5a',
-        lineHeight:    1.7,
+        color:         '#1e4060',
+        lineHeight:    1.8,
         letterSpacing: '0.02em',
         fontWeight:    300,
+        margin:        0,
       }}>
         {description}
       </p>
 
       <span style={{
         fontSize:      9,
-        color:         '#1a3a5a',
-        letterSpacing: '0.12em',
+        color:         '#1e4060',
+        letterSpacing: '0.14em',
         textTransform: 'uppercase',
-        marginTop:     4,
+        marginTop:     2,
       }}>
         entrar →
       </span>

@@ -14,7 +14,6 @@ import { ModeTab } from './ModeTab';
 // Si en el futuro se agregan modos, solo se agrega una entrada aquí.
 const TABS: { mode: AppMode; label: string }[] = [
   { mode: 'audio', label: '// campo · audio' },
-  { mode: 'hands', label: '// campo · manos' },
 ];
 
 export function TopBar() {
@@ -114,16 +113,13 @@ export function TopBar() {
 // Punto de actividad — se ilumina cuando el sistema está procesando datos
 function ActivityDot() {
   const audioPlaying  = useLumyraStore((s) => s.audioPlaying);
-  const cameraActive  = useLumyraStore((s) => s.cameraActive);
-  const isActive      = audioPlaying || cameraActive;
+
 
   return (
     <div style={{
       width:      5,
       height:     5,
       borderRadius: '50%',
-      background:   isActive ? '#00f0c0' : '#0d1a26',
-      boxShadow:    isActive ? '0 0 6px #00f0c0' : 'none',
       transition:   'all 0.3s ease',
     }} />
   );

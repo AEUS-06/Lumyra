@@ -1,29 +1,23 @@
 'use client';
 
-// Panel de audio del modo audio de Lumyra.
-//
-// Responsabilidad única: componer AudioDropZone, AudioFileInfo,
-// AudioPlayButton y AudioProgressBar sin contener lógica propia.
-// Toda la lógica vive en los hooks internos.
-
 import { useCallback } from 'react';
-import { useAudioEngine } from '@/hooks';
-import { useFileDrop } from './hooks/useFileDrop';
-import { useAudioControls } from './hooks/useAudioControls';
+import { useAudioEngine }     from '@/hooks';
+import { useFileDrop }        from './hooks/useFileDrop';
+import { useAudioControls }   from './hooks/useAudioControls';
 import { useAudioPanelState } from './hooks/useAudioPanelState';
-import { AudioDropZone } from './AudioDropZone';
-import { AudioFileInfo } from './AudioFileInfo';
-import { AudioPlayButton } from './AudioPlayButton';
-import { AudioProgressBar } from './AudioProgressBar';
-import { useLumyraStore } from '@/store';
+import { AudioDropZone }      from './AudioDropZone';
+import { AudioFileInfo }      from './AudioFileInfo';
+import { AudioPlayButton }    from './AudioPlayButton';
+import { AudioProgressBar }   from './AudioProgressBar';
+import { useLumyraStore }     from '@/store';
 
 export function AudioPanel() {
-  const engine       = useAudioEngine();
-  const controls     = useAudioControls();
-  const panelState   = useAudioPanelState();
-  const currentTime  = useLumyraStore((s) => s.audioCurrentTime);
+  // Una sola instancia del engine en este componente
+  const engine     = useAudioEngine();
+  const controls   = useAudioControls();
+  const panelState = useAudioPanelState();
+  const currentTime = useLumyraStore((s) => s.audioCurrentTime);
 
-  // Al cargar un archivo, expandir el panel automáticamente
   const handleFile = useCallback(async (file: File) => {
     await engine.loadFile(file);
     panelState.expand();
@@ -37,18 +31,20 @@ export function AudioPanel() {
 
   return (
     <div style={{
-      position:   'absolute',
-      top:        48,
-      left:       0,
-      width:      220,
-      background: 'rgba(4,9,15,0.92)',
-      borderRight: '0.5px solid #0d1a26',
-      padding:    '12px 14px',
-      display:    'flex',
+      position:      'absolute',
+      top:           40,
+      left:          0,
+      width:         220,
+      bottom:        48,
+      background:    'rgba(4,9,15,0.92)',
+      borderRight:   '0.5px solid #0d1a26',
+      padding:       '12px 14px',
+      display:       'flex',
       flexDirection: 'column',
-      gap:        8,
+      gap:           8,
+      zIndex:        40,
+      overflowY:     'auto',
     }}>
-      {/* Encabezado del panel con botón para minimizar */}
       <div style={{
         display:        'flex',
         justifyContent: 'space-between',
@@ -92,14 +88,14 @@ export function AudioPanel() {
               <AudioFileInfo
                 fileName={controls.fileName ?? ''}
                 duration={controls.durationFormatted}
-                decoding={controls.decoding}
+                decoding={engine.decoding}
               />
 
               <AudioPlayButton
                 playing={controls.playing}
-                disabled={controls.decoding}
-                onPlay={controls.play}
-                onStop={controls.stop}
+                disabled={engine.decoding}
+                onPlay={engine.play}
+                onStop={engine.stop}
               />
 
               {controls.playing && (
@@ -112,14 +108,14 @@ export function AudioPanel() {
             </>
           )}
 
-          {controls.error && (
+          {engine.error && (
             <p style={{
               fontFamily: 'var(--font-mono, monospace)',
               fontSize:   10,
               color:      '#ff4444',
               margin:     0,
             }}>
-              {controls.error}
+              {engine.error}
             </p>
           )}
         </>
