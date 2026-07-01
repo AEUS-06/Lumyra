@@ -850,7 +850,7 @@ export default function HomePage() {
                 }}>
                   <img
                     src="/Axel.webp"
-                    alt="atekokokoli"
+                    alt="atekokoli"
                     style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                   />
                   <div style={{
@@ -859,7 +859,7 @@ export default function HomePage() {
                     background: 'rgba(5,5,8,0.92)',
                     borderTop: '1px solid var(--border)',
                   }}>
-                    <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 14, color: 'var(--text)', letterSpacing: '0.12em' }}>ATEKOKOKOLI</div>
+                    <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 14, color: 'var(--text)', letterSpacing: '0.12em' }}>ATEKOKOLI</div>
                     <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 8, color: 'var(--muted)', marginTop: 2 }}>indie dev · mx</div>
                   </div>
                 </div>
