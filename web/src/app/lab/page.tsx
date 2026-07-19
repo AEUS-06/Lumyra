@@ -6,7 +6,7 @@ import { ParameterStrip } from '@/components/ui';
 import { AudioPanel }     from '@/components/audio';
 
 const FieldCanvas = dynamic(
-  () => import('@/components/canvas').then((m) => m.FieldCanvas),
+  () => import('@/components/canvas/FieldCanvas').then((m) => m.FieldCanvas),
   {
     ssr:     false,
     loading: () => (
