@@ -1,7 +1,9 @@
 'use client';
 
-// Componente visual de un tab individual en la barra superior.
+// Tab individual de la barra superior.
 // Responsabilidad única: renderizar el estado activo/inactivo del tab.
+// Transición con curva "húmeda" (cubic-bezier) — coherente con la
+// filosofía de movimiento lento y pictórico del proyecto.
 
 import { AppMode } from '@/store/types/app.types';
 
@@ -18,30 +20,27 @@ export function ModeTab({ mode, label, isActive, onClick }: ModeTabProps) {
       onClick={() => onClick(mode)}
       style={{
         height:        '100%',
-        padding:       '0 20px',
+        padding:       '0 clamp(10px, 3vw, 20px)',
         background:    'transparent',
         border:        'none',
         borderRight:   '1px solid var(--color-border)',
         cursor:        'pointer',
-        fontFamily:    "'JetBrains Mono', monospace",
+        fontFamily:    'var(--font-mono)',
         fontSize:      9,
         letterSpacing: '0.1em',
         textTransform: 'uppercase',
         color:         isActive ? 'var(--color-text-primary)' : 'var(--color-text-muted)',
-        /* Línea activa de 2px en la parte inferior */
         boxShadow:     isActive ? 'inset 0 -2px 0 var(--color-active)' : 'none',
-        transition:    'color 0.15s ease, box-shadow 0.15s ease',
+        transition:    'color 0.3s cubic-bezier(0.2,0,0.2,1), box-shadow 0.3s cubic-bezier(0.2,0,0.2,1)',
         whiteSpace:    'nowrap',
+        overflow:      'hidden',
+        textOverflow:  'ellipsis',
       }}
       onMouseEnter={(e) => {
-        if (!isActive) {
-          (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-text-secondary)';
-        }
+        if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-text-secondary)';
       }}
       onMouseLeave={(e) => {
-        if (!isActive) {
-          (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-text-muted)';
-        }
+        if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-text-muted)';
       }}
     >
       {label}
