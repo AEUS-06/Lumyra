@@ -1,107 +1,139 @@
 'use client';
 
-// Parámetro individual con VU meter vertical.
-// Responsabilidad única: símbolo + valor + barra de nivel.
+// Parámetro individual — tarjeta tipo viñeta con barra de nivel segmentada.
+//
+// Responsabilidad única: renderizar la tarjeta y calcular su posición
+// para el popover. `contain: 'layout style paint'` aísla el repintado de
+// cada tarjeta — un cambio de color o glow en una no fuerza al navegador
+// a recalcular layout de las demás, reduciendo el costo de render conjunto.
+//
+// El popover permanece montado unos milisegundos más al cerrarse para
+// poder animar su salida — desaparecer de golpe se siente "cortado";
+// desvanecerse se siente intencional.
 
+import { useRef, useEffect, useState } from 'react';
 import { FormattedParameter } from './hooks/useParameterFormat';
+import { ParameterPopover } from './ParameterPopover';
 
 interface ParameterValueProps {
-  parameter:    FormattedParameter;
-  hideOnMobile?: boolean;
+  parameter:  FormattedParameter;
+  isOpen:     boolean;
+  onToggle:   (symbol: string, rect: { left: number; top: number; width: number }) => void;
+  onClose:    () => void;
+  anchorRect: { left: number; top: number; width: number } | null;
 }
 
-export function ParameterValue({ parameter, hideOnMobile }: ParameterValueProps) {
-  const { symbol, value, isActive, isHot } = parameter;
+const SEGMENTS = 8;
+const CLOSE_ANIMATION_MS = 180;
 
-  // Color del valor según nivel de actividad
-  const valueColor = isHot
+export function ParameterValue({ parameter, isOpen, onToggle, onClose, anchorRect }: ParameterValueProps) {
+  const { symbol, value, rawValue, isActive, isHot } = parameter;
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  // El popover sigue montado brevemente tras cerrarse para animar su salida
+  const [shouldRenderPopover, setShouldRenderPopover] = useState(isOpen);
+  useEffect(() => {
+    if (isOpen) {
+      setShouldRenderPopover(true);
+      return;
+    }
+    const timeout = setTimeout(() => setShouldRenderPopover(false), CLOSE_ANIMATION_MS);
+    return () => clearTimeout(timeout);
+  }, [isOpen]);
+
+  const accentColor = isHot
     ? 'var(--color-hot)'
     : isActive
     ? 'var(--color-active)'
-    : 'var(--color-text-muted)';
+    : 'var(--color-text-dim)';
 
-  // Nivel de la barra — extraído del valor numérico si es posible
-  const level = isHot ? 0.9 : isActive ? 0.5 : 0.1;
+  const litSegments = Math.round(Math.max(0, Math.min(1, rawValue)) * SEGMENTS);
+
+  function handleClick() {
+    const rect = triggerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    onToggle(symbol, { left: rect.left, top: rect.top, width: rect.width });
+  }
 
   return (
-    <div
-      style={{
-        flex:           1,
-        display:        'flex',
-        alignItems:     'center',
-        gap:            8,
-        padding:        '0 10px',
-        borderRight:    '1px solid var(--color-border-light)',
-        minWidth:       0,
-        overflow:       'hidden',
-        /* En mobile, ocultar si hideOnMobile = true */
-        ...(hideOnMobile ? { display: 'none' } : {}),
-      }}
-      // Aplicar media query vía ref no es idiomático en React — usamos un style tag global en globals.css
-      // o la solución más simple: el componente renderiza siempre, pero el padre puede no incluirlo.
-      // Aquí usamos el atributo data para que CSS pueda targetear (en globals.css).
-      data-hide-mobile={hideOnMobile ? 'true' : undefined}
-    >
-      {/* VU meter vertical */}
-      <div style={{
-        width:          3,
-        height:         24,
-        background:     'var(--color-border)',
-        flexShrink:     0,
-        position:       'relative',
-        overflow:       'hidden',
-      }}>
-        <div style={{
-          position:      'absolute',
-          bottom:        0,
-          left:          0,
-          right:         0,
-          height:        `${level * 100}%`,
-          background:    isHot
-            ? 'var(--color-hot)'
-            : isActive
-            ? 'var(--color-active)'
-            : 'var(--color-border-mid)',
-          transition:    'height 0.2s ease, background 0.2s ease',
-          /* Pulso sutil cuando está hot */
-          animation:     isHot ? 'activity-pulse 0.8s ease-in-out infinite' : 'none',
-        }} />
-      </div>
-
-      {/* Texto */}
-      <div style={{
-        display:        'flex',
-        flexDirection:  'column',
-        gap:            2,
-        minWidth:       0,
-        overflow:       'hidden',
-      }}>
-        {/* Símbolo */}
+    <div style={{ position: 'relative', flex: '0 0 auto', scrollSnapAlign: 'start' }}>
+      <button
+        ref={triggerRef}
+        onClick={handleClick}
+        title={`Ver información de ${symbol}`}
+        style={{
+          minWidth:      92,
+          display:       'flex',
+          flexDirection: 'column',
+          gap:           6,
+          padding:       '7px 12px',
+          margin:        '6px 4px',
+          background:    'var(--color-bg-surface)',
+          border:        `1px solid ${isOpen ? accentColor : isHot ? 'var(--color-hot)' : 'var(--color-border)'}`,
+          boxShadow:     isOpen ? 'var(--shadow-glow-active)' : isHot ? 'var(--shadow-glow-hot)' : 'none',
+          animation:     'fade-slide-in 0.4s ease both',
+          transition:    'border-color 0.3s ease, box-shadow 0.3s ease',
+          cursor:        'pointer',
+          textAlign:     'left',
+          contain:       'layout style paint',
+        }}
+      >
         <span style={{
-          fontFamily:    "'JetBrains Mono', monospace",
-          fontSize:      7,
-          color:         'var(--color-text-muted)',
-          letterSpacing: '0.06em',
+          fontFamily:    'var(--font-mono)',
+          fontSize:      8,
+          color:         'var(--color-text-secondary)',
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
           whiteSpace:    'nowrap',
         }}>
           {symbol}
         </span>
 
-        {/* Valor numérico */}
         <span style={{
-          fontFamily:    "'JetBrains Mono', monospace",
-          fontSize:      11,
-          fontWeight:    isHot ? 600 : 400,
-          color:         valueColor,
-          letterSpacing: '0.02em',
-          transition:    'color 0.2s ease',
+          fontFamily:    'var(--font-mono)',
+          fontSize:      19,
+          fontWeight:    isHot ? 700 : 500,
+          color:         isHot ? 'var(--color-hot)' : 'var(--color-text-primary)',
+          letterSpacing: '0.01em',
+          lineHeight:    1,
           whiteSpace:    'nowrap',
-          overflow:      'hidden',
-          textOverflow:  'ellipsis',
+          animation:     isHot ? 'value-glow 1.4s ease-in-out infinite' : 'none',
         }}>
           {value}
         </span>
-      </div>
+
+        <div style={{ display: 'flex', gap: 2 }}>
+          {Array.from({ length: SEGMENTS }, (_, i) => {
+            const lit = i < litSegments;
+            const segColor = lit
+              ? (i >= SEGMENTS - 2 ? 'var(--color-hot)' : accentColor)
+              : 'var(--color-border)';
+            return (
+              <div
+                key={i}
+                style={{
+                  flex:       1,
+                  height:     5,
+                  background: segColor,
+                  opacity:    lit ? 1 : 0.5,
+                  transition: 'background 0.15s ease, opacity 0.15s ease',
+                  willChange: 'background, opacity',
+                }}
+              />
+            );
+          })}
+        </div>
+      </button>
+
+      {shouldRenderPopover && anchorRect && (
+        <ParameterPopover
+          parameter={parameter}
+          anchorRect={anchorRect}
+          accentColor={accentColor}
+          isOpen={isOpen}
+          onClose={onClose}
+        />
+      )}
     </div>
   );
 }
