@@ -6,8 +6,7 @@
 // de qué popover está abierto — solo recibe y renderiza la lista.
 
 import { FormattedParameter } from '../hooks';
-import { ParameterValue } from '../parameter';
-import { AnchorRect } from '../parameter/popoverPosition';
+import { ParameterValue, AnchorRect } from '../parameter';
 
 interface OpenPopoverState {
   symbol: string;

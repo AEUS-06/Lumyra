@@ -9,7 +9,7 @@
 import { useCallback, useState } from 'react';
 import { useLumyraStore, LumyraStore } from '@/store';
 import { useParameterFormat, useMediaQuery, useThrottledStoreValue, BREAKPOINTS } from '../hooks';
-import { AnchorRect } from '../parameter/popoverPosition';
+import { AnchorRect } from '../parameter';
 import { ModeLabel } from './ModeLabel';
 import { HomeButton } from './HomeButton';
 import { ParameterList } from './ParameterList';

@@ -1,6 +1,6 @@
 // Punto de entrada del dominio illustrations.
-// components/ui/parameter/ importa desde aquí.
+// export * reenvía todo — este dominio no necesita ocultar nada de
+// lo que expone su archivo principal y su archivo de datos.
 
-export { ParameterIllustration } from './ParameterIllustration';
-export { getParameterInfo }      from './parameterPhysicsInfo';
-export type { ParameterPhysicsInfo } from './parameterPhysicsInfo';
+export * from './ParameterIllustration';
+export * from './parameterPhysicsInfo';
