@@ -2,8 +2,6 @@
 
 // Tab individual de la barra superior.
 // Responsabilidad única: renderizar el estado activo/inactivo del tab.
-// Transición con curva "húmeda" (cubic-bezier) — coherente con la
-// filosofía de movimiento lento y pictórico del proyecto.
 
 import { AppMode } from '@/store/types/app.types';
 

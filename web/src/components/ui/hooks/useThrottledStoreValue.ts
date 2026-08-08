@@ -5,21 +5,14 @@
 // segundo, una vez por frame de audio).
 //
 // Responsabilidad única: desacoplar la frecuencia de actualización visual
-// de la frecuencia real del dato subyacente. Componentes que se ven bien
-// actualizándose 15 veces por segundo no necesitan re-renderizarse 60 —
-// hacerlo de todas formas es la causa más común de "jank" percibido en
-// paneles con muchos elementos: el navegador reflow/repinta más de lo
-// que el ojo puede notar, y eso sí se siente como trabado.
-//
-// Se suscribe directamente al store con subscribe() (fuera del ciclo de
-// selectores de React) y solo confirma el valor a React cada intervalMs.
+// de la frecuencia real del dato subyacente.
 
 import { useEffect, useRef, useState } from 'react';
 import { useLumyraStore, LumyraStore } from '@/store';
 
 export function useThrottledStoreValue<T>(
   selector: (state: LumyraStore) => T,
-  intervalMs: number = 66 // ~15 actualizaciones por segundo — fluido para el ojo, ligero para React
+  intervalMs: number = 66
 ): T {
   const [value, setValue] = useState<T>(() => selector(useLumyraStore.getState()));
   const latestRef = useRef(value);

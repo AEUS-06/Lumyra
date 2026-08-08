@@ -2,13 +2,11 @@
 //
 // Responsabilidad única: datos puros, sin lógica ni estado.
 // Es la fuente de contenido educativo para ParameterPopover.
-// No es un hook — es un mapa de datos, se importa directamente.
 
 export interface ParameterPhysicsInfo {
   fullName:    string;
   formula:     string;
   description: string;
-  // Tipo de ilustración a mostrar en el popover — ver ParameterIllustration.tsx
   illustration: 'density' | 'current' | 'induction' | 'permittivity' | 'permeability' | 'frequency' | 'wavelength' | 'field';
 }
 
@@ -63,8 +61,6 @@ const INFO: Record<string, ParameterPhysicsInfo> = {
   },
 };
 
-// Devuelve la información física de un símbolo, o un fallback genérico
-// si el símbolo no está mapeado (defensivo — no debería ocurrir en uso normal).
 export function getParameterInfo(symbol: string): ParameterPhysicsInfo {
   return INFO[symbol] ?? {
     fullName:     symbol,
