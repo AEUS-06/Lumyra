@@ -1,5 +1,7 @@
-// Punto de entrada de los componentes de UI globales.
-// Los demás componentes y páginas importan desde aquí.
+// Punto de entrada global de components/ui.
+// El resto de la aplicación importa únicamente desde aquí —
+// nunca desde los dominios internos (topbar/, strip/, parameter/,
+// illustrations/, hooks/) directamente.
 
-export { TopBar }         from './TopBar';
-export { ParameterStrip } from './ParameterStrip';
+export { TopBar }         from './topbar';
+export { ParameterStrip } from './strip';

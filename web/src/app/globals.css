@@ -9,39 +9,48 @@
 /* ─── Tokens de diseño ────────────────────────────────────────────────────────
    Dos conjuntos: [data-theme="dark"] (default) y [data-theme="light"].
    El root arranca en oscuro. El toggle del TopBar cambia el atributo en <html>.
+
+   Los colores de señal (--color-active, --color-hot, --color-negative,
+   --color-danger) y los fondos del tema oscuro son EXACTAMENTE los mismos
+   pigmentos que pinta el lienzo en components/canvas/pictoric/pigments.ts
+   (BLUE, CYAN, PURPLE, RED, BG, WHITE). Si cambian los pigmentos allá,
+   actualizar aquí también — deben permanecer sincronizados.
 ──────────────────────────────────────────────────────────────────────────────*/
 :root,
 [data-theme="dark"] {
-  /* Fondos */
-  --color-bg:           #04090f;
-  --color-bg-surface:   #080f18;
-  --color-bg-panel:     rgba(4, 9, 15, 0.94);
-  --color-bg-overlay:   rgba(4, 9, 15, 0.72);
 
-  /* Bordes */
-  --color-border:       #0d1e2e;
-  --color-border-light: #0a1520;
-  --color-border-mid:   #1a2a3a;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
 
-  /* Texto */
-  --color-text-primary:   #ffffff;
-  --color-text-secondary: #3a6080;
-  --color-text-muted:     #1e3a52;
-  --color-text-dim:       #0f2030;
+  /* Fondos — pigmento BG exacto (#0D0D0F) */
+  --color-bg:           #0d0d0f;
+  --color-bg-surface:   #17171b;
+  --color-bg-panel:     rgba(13, 13, 15, 0.90);
+  --color-bg-overlay:   rgba(13, 13, 15, 0.72);
 
-  /* Señal */
-  --color-active:   #3a8fff;
-  --color-hot:      #00f0c0;
-  --color-negative: #a050ff;
-  --color-danger:   #ff4444;
+  /* Bordes — tinte azul sutil derivado del pigmento BLUE */
+  --color-border:       rgba(56, 115, 242, 0.16);
+  --color-border-light: rgba(56, 115, 242, 0.08);
+  --color-border-mid:   rgba(56, 115, 242, 0.32);
+
+  /* Texto — blanco titanio (pigmento WHITE), nunca blanco puro digital */
+  --color-text-primary:   #f2ede0;
+  --color-text-secondary: rgba(242, 237, 224, 0.55);
+  --color-text-muted:     rgba(242, 237, 224, 0.34);
+  --color-text-dim:       rgba(242, 237, 224, 0.18);
+
+  /* Señal — pigmentos exactos del campo electromagnético */
+  --color-active:   #3873f2; /* BLUE   — líneas de campo positivas */
+  --color-hot:      #00d999; /* CYAN   — energía alta / beat */
+  --color-negative: #8c33e6; /* PURPLE — carga negativa */
+  --color-danger:   #d94c33; /* RED    — alerta */
 
   /* Glassmorphism */
   --backdrop-blur: blur(12px);
 
-  /* Sombras */
-  --shadow-panel: 0 0 0 0.5px #0d1e2e, 0 8px 32px rgba(0, 0, 0, 0.6);
-  --shadow-glow-active: 0 0 20px rgba(58, 143, 255, 0.15);
-  --shadow-glow-hot:    0 0 20px rgba(0, 240, 192, 0.15);
+  /* Sombras — glow con los pigmentos reales */
+  --shadow-panel:       0 0 0 1px rgba(56, 115, 242, 0.12), 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-glow-active: 0 0 20px rgba(56, 115, 242, 0.22);
+  --shadow-glow-hot:    0 0 20px rgba(0, 217, 153, 0.22);
 }
 
 [data-theme="light"] {
@@ -99,21 +108,18 @@ html, body {
 }
 
 /* ─── Tipografía base ─────────────────────────────────────────────────────────*/
-/* Display — Bebas Neue solo para wordmark y h1 grandes */
 .font-display {
   font-family:    'Bebas Neue', 'Impact', sans-serif;
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
-/* Mono — datos, parámetros, UI técnica */
 .font-mono,
 code,
 pre {
   font-family: 'JetBrains Mono', 'Courier New', monospace;
 }
 
-/* Body — descripciones */
 .font-body {
   font-family: 'Inter', system-ui, sans-serif;
 }
@@ -125,7 +131,7 @@ pre {
 
 /* ─── Selección ───────────────────────────────────────────────────────────────*/
 ::selection {
-  background: rgba(58, 143, 255, 0.2);
+  background: rgba(56, 115, 242, 0.25);
   color:      var(--color-text-primary);
 }
 
@@ -169,6 +175,93 @@ a {
   to   { transform: translateX(0); }
 }
 
+/* Glow pulsante en valores "hot" — el texto respira con luz propia */
+@keyframes value-glow {
+  0%, 100% { text-shadow: 0 0 0 transparent; }
+  50%      { text-shadow: 0 0 10px currentColor, 0 0 2px currentColor; }
+}
+
+/* Entrada suave — cualquier elemento que aparece se desliza y aparece */
+@keyframes fade-slide-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Animación de salida del popover ────────────────────────────────────── */
+@keyframes fade-slide-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(4px); }
+}
+
+/* Pulso de las marcas de esquina del wordmark — vivas, no estáticas */
+@keyframes bracket-pulse {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 0.9; }
+}
+
+/* Barrido de luz sutil bajo la topbar — sensación de instrumento encendido */
+@keyframes scan-line {
+  0%   { transform: translateX(-100%); opacity: 0; }
+  10%  { opacity: 0.5; }
+  90%  { opacity: 0.5; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+
+/* ─── Keyframes de ParameterIllustration (v3 — duración fija) ─────────────────
+   Todas estas duraciones son constantes y nunca se recalculan desde React.
+   La reactividad a la música se maneja aparte con `transform: scale()` +
+   `transition` sobre el <g> contenedor (ver ParameterIllustration.tsx),
+   que sí puede interpolar sin reiniciar el ciclo de la animación base.
+──────────────────────────────────────────────────────────────────────────────*/
+
+@keyframes dot-multiply {
+  0%, 100% { opacity: 0.3; transform: scale(0.75); }
+  50%      { opacity: 1;   transform: scale(1.25); }
+}
+
+@keyframes arrow-travel {
+  0%   { offset-distance: 0%;   opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { offset-distance: 100%; opacity: 0; }
+}
+
+@keyframes orbit-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes burst-pulse {
+  0%   { transform: scale(0.3); opacity: 0.9; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+@keyframes wave-flow-tile {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-40px); }
+}
+
+@keyframes oscillate-y {
+  0%, 100% { transform: translateY(-14px); }
+  50%      { transform: translateY(14px); }
+}
+
+@keyframes dash-travel {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -36; }
+}
+
+@keyframes ray-pulse {
+  0%, 100% { transform: scale(0.7); opacity: 0.5; }
+  50%      { transform: scale(1.15); opacity: 1; }
+}
+
+/* Pulso de beat — un solo disparo, reiniciado por React vía key={beatKey} */
+@keyframes beat-kick {
+  0%   { transform: scale(0.5); opacity: 1; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
 /* ─── Accesibilidad — reduce motion ──────────────────────────────────────────*/
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -184,7 +277,6 @@ a {
     --strip-height:  52px;
   }
 
-  /* ParameterValue: ocultar los últimos 2 en mobile */
   [data-hide-mobile="true"] {
     display: none !important;
   }
