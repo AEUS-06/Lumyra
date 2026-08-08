@@ -1,8 +1,9 @@
 // Punto de entrada de los hooks de ui/.
-// Los componentes importan desde aquí.
+// export * reenvía TODO lo que cada archivo exporta (funciones y tipos
+// juntos) — no hay nada que listar a mano ni que se pueda olvidar.
 
-export { useParameterFormat }    from './useParameterFormat';
-export { useMediaQuery, BREAKPOINTS } from './useMediaQuery';
-export { useThrottledStoreValue } from './useThrottledStoreValue';
-export { usePopoverLifecycle }   from './usePopoverLifecycle';
-export { useDismissable }        from './useDismissable';
+export * from './useParameterFormat';
+export * from './useMediaQuery';
+export * from './useThrottledStoreValue';
+export * from './usePopoverLifecycle';
+export * from './useDismissable';
